@@ -2,7 +2,7 @@ import discord
 
 
 """
-This section defines the intents that the bot will use throughout the section
+This section defines the intents that the bot will use
 as well as logging into the bot and returning to the console which bot was logged into
 
 When you run the client via the command line, you should see the following output:
