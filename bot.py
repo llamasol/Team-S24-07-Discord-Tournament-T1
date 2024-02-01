@@ -19,8 +19,8 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.author == client.user:
-        return
+    if message.author == client.user and message.content.startswith('ping'):
+        await message.channel.send('Why are you signed into the bot on discord...')
     if message.author.id == owner and message.content.startswith('ping'):
         await message.channel.send('pong')
         return 'owner said ping'
