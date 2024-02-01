@@ -3,3 +3,4 @@
 *.config
 *.txt
 *.DS_Store
+*.env
