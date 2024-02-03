@@ -31,6 +31,7 @@ async def on_message(message):
         return
     if message.author.id == owner and message.content.startswith('ping'):
         await message.channel.send('pong')
+        print(f'owner said ping')
         return 'owner said ping'
 
 #starts the bot
