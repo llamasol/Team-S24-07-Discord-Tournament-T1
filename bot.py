@@ -1,6 +1,7 @@
 import discord
 import os
 from dotenv import load_dotenv, find_dotenv
+from discord import app_commands
 
 """
 This section defines the intents that the bot will use
@@ -14,12 +15,23 @@ load_dotenv(find_dotenv())
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
 owner = 97355249395716096
 token = os.getenv('TOKEN')
 
 
+
+@tree.command(
+    name="ping",
+    description="Ping maybe?",
+    guild=discord.Object(id=1197932384348295249)
+)
+async def first_command(interaction):
+    await interaction.response.send_message("Pong!")
+
 @client.event
 async def on_ready():
+    await tree.sync(guild=discord.Object(id=1197932384348295249))
     print(f'Logged in as {client.user}')
 
 
