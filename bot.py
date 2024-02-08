@@ -34,7 +34,6 @@ async def on_ready():
     await tree.sync(guild=discord.Object(id=1197932384348295249))
     print(f'Logged in as {client.user}')
 
-
 #little connection test message response system
 @client.event
 async def on_message(message):
@@ -45,6 +44,44 @@ async def on_message(message):
         await message.channel.send('pong')
         print(f'owner said ping')
         return 'owner said ping'
+
+#Button class for checking in to tournaments.
+class Buttons(discord.ui.View):
+    def __init__(self, *, timeout = 900):
+        super().__init__(timeout = timeout)
+
+    #Button to check-in.
+    @discord.ui.button(
+            label = "Check-In",
+            style = discord.ButtonStyle.green)
+    async def checkin(self, interaction: discord.Interaction, button: discord.ui.Button):
+        button.disabled = True
+        await interaction.response.send_message('You have checked in!', view = self)
+
+    #Button to Volunteer to sit out of the tournament.
+    @discord.ui.button(
+            label = "Volunteer",
+            style = discord.ButtonStyle.blurple)
+    async def volunteer(self, interaction: discord.Interaction, button: discord.ui.Button):
+        button.disabled = True
+        await interaction.response.send_message('Thank you for volunteering!', view = self)
+
+    #Button to rejoin the tournament in case someone had to leave.
+    @discord.ui.button(
+            label = "Rejoin",
+            style = discord.ButtonStyle.red)
+    async def rejoin(self, interaction: discord.Interaction, button: discord.ui.Button):
+        button.disabled = True
+        await interaction.response.send_message('Welcome back to the game!', view = self)
+
+#Button command.
+@tree.command(
+        name = 'checkin',
+        description = 'Initiate Tournament Check-In.',
+        guild = discord.Object(id=1197932384348295249))
+async def checkin(interaction):
+        view = Buttons()
+        await interaction.response.send_message('Check-In for the tournament has started! You have 15 minutes to check-in.', view = view)
 
 #starts the bot
 client.run(token)
