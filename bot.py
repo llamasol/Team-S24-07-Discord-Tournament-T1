@@ -56,23 +56,35 @@ class Buttons(discord.ui.View):
             style = discord.ButtonStyle.green)
     async def checkin(self, interaction: discord.Interaction, button: discord.ui.Button):
         button.disabled = True
-        await interaction.response.send_message('You have checked in!', view = self)
+        await interaction.response.send_message(view = self)
+        await interaction.followup.send_message('You have checked in!', ephemeral = True)
 
     #Button to Volunteer to sit out of the tournament.
     @discord.ui.button(
             label = "Volunteer",
-            style = discord.ButtonStyle.blurple)
+            style = discord.ButtonStyle.grey)
     async def volunteer(self, interaction: discord.Interaction, button: discord.ui.Button):
         button.disabled = True
-        await interaction.response.send_message('Thank you for volunteering!', view = self)
+        await interaction.response.send_message(view = self)
+        await interaction.followup.send_message('Thank you for volunteering!', ephemeral = True)
+
+    #Button to rejoin the tournament in case someone had to leave.
+    @discord.ui.button(
+            label = "Leave",
+            style = discord.ButtonStyle.red)
+    async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
+        button.disabled = True
+        await interaction.response.send_message(view = self)
+        await interaction.followup.send_message('Sorry to see you go.', ephemeral = True)
 
     #Button to rejoin the tournament in case someone had to leave.
     @discord.ui.button(
             label = "Rejoin",
-            style = discord.ButtonStyle.red)
+            style = discord.ButtonStyle.blurple)
     async def rejoin(self, interaction: discord.Interaction, button: discord.ui.Button):
         button.disabled = True
-        await interaction.response.send_message('Welcome back to the game!', view = self)
+        await interaction.response.send_message(view = self)
+        await interaction.followup.send_message('Welcome back to the game!', ephemeral = True)
 
 #Button command.
 @tree.command(
