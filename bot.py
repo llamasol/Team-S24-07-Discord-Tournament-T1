@@ -45,8 +45,8 @@ async def on_message(message):
         print(f'owner said ping')
         return 'owner said ping'
 
-#Button class for checking in to tournaments.
-class Buttons(discord.ui.View):
+#Checkin button class for checking in to tournaments.
+class CheckinButtons(discord.ui.View):
     def __init__(self, *, timeout = 900):
         super().__init__(timeout = timeout)
 
@@ -57,16 +57,7 @@ class Buttons(discord.ui.View):
     async def checkin(self, interaction: discord.Interaction, button: discord.ui.Button):
         button.disabled = True
         await interaction.response.edit_message(view = self)
-        await interaction.followup.send_message('You have checked in!', ephemeral = True)
-
-    #Button to Volunteer to sit out of the tournament.
-    @discord.ui.button(
-            label = "Volunteer",
-            style = discord.ButtonStyle.grey)
-    async def volunteer(self, interaction: discord.Interaction, button: discord.ui.Button):
-        button.disabled = True
-        await interaction.response.edit_message(view = self)
-        await interaction.followup.send_message('Thank you for volunteering!', ephemeral = True)
+        await interaction.followup.send('You have checked in!', ephemeral = True)
 
     #Button to rejoin the tournament in case someone had to leave.
     @discord.ui.button(
@@ -75,8 +66,22 @@ class Buttons(discord.ui.View):
     async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
         button.disabled = True
         await interaction.response.edit_message(view = self)
-        await interaction.followup.send_message('Sorry to see you go.', ephemeral = True)
+        await interaction.followup.send('Sorry to see you go.', ephemeral = True)
 
+#Recheck button class for volunteering to sit out of a tournament or rejoin a tournament.
+class RecheckButtons(discord.ui.View):
+    def __init__(self, *, timeout = 900):
+        super().__init__(timeout = timeout)
+
+    #Button to Volunteer to sit out of the tournament.
+    @discord.ui.button(
+            label = "Volunteer",
+            style = discord.ButtonStyle.grey)
+    async def volunteer(self, interaction: discord.Interaction, button: discord.ui.Button):
+        button.disabled = True
+        await interaction.response.edit_message(view = self)
+        await interaction.followup.send('Thank you for volunteering!', ephemeral = True)
+    
     #Button to rejoin the tournament in case someone had to leave.
     @discord.ui.button(
             label = "Rejoin",
@@ -84,16 +89,34 @@ class Buttons(discord.ui.View):
     async def rejoin(self, interaction: discord.Interaction, button: discord.ui.Button):
         button.disabled = True
         await interaction.response.edit_message(view = self)
-        await interaction.followup.send_message('Welcome back to the game!', ephemeral = True)
+        await interaction.followup.send('Welcome back to the game!', ephemeral = True)
 
-#Button command.
+#Checkin button command.
 @tree.command(
         name = 'checkin',
         description = 'Initiate Tournament Check-In.',
         guild = discord.Object(id=1197932384348295249))
 async def checkin(interaction):
-        view = Buttons()
-        await interaction.response.send_message('Check-In for the tournament has started! You have 15 minutes to check-in.', view = view)
+        view = CheckinButtons()
+        await interaction.response.send('Check-In for the tournament has started! You have 15 minutes to check-in.', view = view)
+
+#Recheck button command.
+@tree.command(
+        name = 'recheck',
+        description = 'Allow users to volunteer out or rejoin a match.',
+        guild = discord.Object(id=1197932384348295249))
+async def checkin(interaction):
+        view = RecheckButtons()
+        await interaction.response.send('Players needed to either volunteer or rejoin to balance teams.', view = view)
+
+#Toxicity command.
+@tree.command(
+     name = 'toxicity',
+     description = 'Give a player one point of toxicity.',
+     guild = discord.Object(id=1197932384348295249))
+async def toxicity(ctx, user: discord.Member, message: str):
+     user = await client.get_user(user.id)
+     await user.send(f'{message}')
 
 #starts the bot
 client.run(token)
