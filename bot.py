@@ -98,7 +98,7 @@ class CheckinButtons(discord.ui.View):
         guild = discord.Object(id=1197932384348295249))
 async def checkin(interaction):
         checkin_started = True
-        view = Buttons()
+        view = CheckinButtons()
         await interaction.response.send_message('Check-In for the tournament has started! You have 15 minutes to check-in.', view = view)
 
 
