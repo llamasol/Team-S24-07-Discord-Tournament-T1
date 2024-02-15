@@ -2,6 +2,8 @@ import discord
 import os
 from dotenv import load_dotenv, find_dotenv
 from discord import app_commands
+from discord.utils import get
+
 
 """
 This section defines the intents that the bot will use
@@ -13,13 +15,15 @@ Logged in as <insert bot name>
 
 load_dotenv(find_dotenv())
 intents = discord.Intents.default()
+intents.guilds = True
+intents.guild_messages = True
 intents.message_content = True
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 owner = 97355249395716096
 token = os.getenv('TOKEN')
 
-
+checkin_started = False
 
 @tree.command(
     name="ping",
@@ -55,41 +59,37 @@ class CheckinButtons(discord.ui.View):
             label = "Check-In",
             style = discord.ButtonStyle.green)
     async def checkin(self, interaction: discord.Interaction, button: discord.ui.Button):
-        button.disabled = True
+
+        player = get(interaction.guild.roles, id=1205644117657391114)
+        member = interaction.user
+
+        if player in member.roles:
+            await interaction.response.edit_message(view = self)
+            await interaction.followup.send('You have already checked in.', ephemeral=True)
+        await member.add_roles(player)
         await interaction.response.edit_message(view = self)
         await interaction.followup.send('You have checked in!', ephemeral = True)
+        return "Checked in"
+            
 
     #Button to rejoin the tournament in case someone had to leave.
     @discord.ui.button(
             label = "Leave",
             style = discord.ButtonStyle.red)
     async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
-        button.disabled = True
-        await interaction.response.edit_message(view = self)
-        await interaction.followup.send('Sorry to see you go.', ephemeral = True)
 
-#Recheck button class for volunteering to sit out of a tournament or rejoin a tournament.
-class RecheckButtons(discord.ui.View):
-    def __init__(self, *, timeout = 900):
-        super().__init__(timeout = timeout)
+        player = get(interaction.guild.roles, id=1205644117657391114)
+        member = interaction.user
 
-    #Button to Volunteer to sit out of the tournament.
-    @discord.ui.button(
-            label = "Volunteer",
-            style = discord.ButtonStyle.grey)
-    async def volunteer(self, interaction: discord.Interaction, button: discord.ui.Button):
-        button.disabled = True
+        if player in member.roles:
+            await member.remove_roles(player)
+            await interaction.response.edit_message(view = self)
+            await interaction.followup.send('Sorry to see you go.', ephemeral = True)
+            return "Role Removed"
         await interaction.response.edit_message(view = self)
-        await interaction.followup.send('Thank you for volunteering!', ephemeral = True)
-    
-    #Button to rejoin the tournament in case someone had to leave.
-    @discord.ui.button(
-            label = "Rejoin",
-            style = discord.ButtonStyle.blurple)
-    async def rejoin(self, interaction: discord.Interaction, button: discord.ui.Button):
-        button.disabled = True
-        await interaction.response.edit_message(view = self)
-        await interaction.followup.send('Welcome back to the game!', ephemeral = True)
+        await interaction.followup.send('You have not checked in. Please checkin first', ephemeral = True)
+        return "Did not check in yet"
+
 
 #Checkin button command.
 @tree.command(
@@ -97,26 +97,12 @@ class RecheckButtons(discord.ui.View):
         description = 'Initiate Tournament Check-In.',
         guild = discord.Object(id=1197932384348295249))
 async def checkin(interaction):
-        view = CheckinButtons()
-        await interaction.response.send('Check-In for the tournament has started! You have 15 minutes to check-in.', view = view)
+        checkin_started = True
+        view = Buttons()
+        await interaction.response.send_message('Check-In for the tournament has started! You have 15 minutes to check-in.', view = view)
 
-#Recheck button command.
-@tree.command(
-        name = 'recheck',
-        description = 'Allow users to volunteer out or rejoin a match.',
-        guild = discord.Object(id=1197932384348295249))
-async def checkin(interaction):
-        view = RecheckButtons()
-        await interaction.response.send('Players needed to either volunteer or rejoin to balance teams.', view = view)
 
-#Toxicity command.
-@tree.command(
-     name = 'toxicity',
-     description = 'Give a player one point of toxicity.',
-     guild = discord.Object(id=1197932384348295249))
-async def toxicity(ctx, user: discord.Member, message: str):
-     user = await client.get_user(user.id)
-     await user.send(f'{message}')
+
 
 #starts the bot
 client.run(token)
