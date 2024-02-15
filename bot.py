@@ -38,17 +38,6 @@ async def on_ready():
     await tree.sync(guild=discord.Object(id=1197932384348295249))
     print(f'Logged in as {client.user}')
 
-#little connection test message response system
-@client.event
-async def on_message(message):
-    if message.author == client.user and message.content.startswith('ping'):
-        await message.channel.send('Why are you signed into the bot on discord...')
-        return
-    if message.author.id == owner and message.content.startswith('ping'):
-        await message.channel.send('pong')
-        print(f'owner said ping')
-        return 'owner said ping'
-
 #Checkin button class for checking in to tournaments.
 class CheckinButtons(discord.ui.View):
     def __init__(self, *, timeout = 900):
@@ -66,6 +55,7 @@ class CheckinButtons(discord.ui.View):
         if player in member.roles:
             await interaction.response.edit_message(view = self)
             await interaction.followup.send('You have already checked in.', ephemeral=True)
+            return "Is already checked in"
         await member.add_roles(player)
         await interaction.response.edit_message(view = self)
         await interaction.followup.send('You have checked in!', ephemeral = True)
