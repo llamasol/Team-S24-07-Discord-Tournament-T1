@@ -88,6 +88,63 @@ class CheckinButtons(discord.ui.View):
         return "Did not check in yet"
 
 
+
+class volunteerButtons(discord.ui.View):
+    def __init__(self, *, timeout = 900):
+        super().__init__(timeout = timeout)
+    """
+    This button is a green button that is called check in
+    When this button is pulled up, it will show the text "Volunteer"
+
+    The following output when clicking the button is to be expected:
+    If the user already has the volunteer role, it means that they are already volunteered.
+    If the user doesn't have the volunteer role, it will give them the volunteer role. 
+    """
+    @discord.ui.button(
+            label = "Volunteer",
+            style = discord.ButtonStyle.green)
+    async def checkin(self, interaction: discord.Interaction, button: discord.ui.Button):
+
+        volunteer = get(interaction.guild.roles, id=1205644141543817296)
+        member = interaction.user
+
+        if volunteer in member.roles:
+            await interaction.response.edit_message(view = self)
+            await interaction.followup.send('You have already volunteered to sit out, if you wish to rejoin click rejoin.', ephemeral=True)
+            return "Is already checked in"
+        await member.add_roles(volunteer)
+        await interaction.response.edit_message(view = self)
+        await interaction.followup.send('You have volunteered to sit out!', ephemeral = True)
+        return "Checked in"
+            
+
+    """
+    This button is the leave button. It is used for if the player who has volunteer wants to rejoin
+    The following output is to be expected:
+
+    If the user has the player role, it will remove it and tell the player that it has been removed
+    If the user does not have the volunteer role, it will tell them to volunteer first.
+    """
+    @discord.ui.button(
+            label = "Rejoin",
+            style = discord.ButtonStyle.red)
+    async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
+
+
+
+        
+        volunteer = get(interaction.guild.roles, id=1205644141543817296)
+        member = interaction.user
+
+        if volunteer in member.roles:
+            await member.remove_roles(volunteer)
+            await interaction.response.edit_message(view = self)
+            await interaction.followup.send('Welcome back in!', ephemeral = True)
+            return "Role Removed"
+        await interaction.response.edit_message(view = self)
+        await interaction.followup.send('You have not volunteered to sit out, please volunteer to sit out first.', ephemeral = True)
+        return "Did not check in yet"
+
 #Command to start check-in
 @tree.command(
         name = 'checkin',
@@ -98,6 +155,15 @@ async def checkin(interaction):
         await interaction.response.send_message('Check-In for the tournament has started! You have 15 minutes to check-in.', view = view)
 
 
+#Command to start volunteer
+@tree.command(
+    name='volunteercheck',
+    description='initiate check for volunteers',
+    guild= discord.Object(1197932384348295249)
+)
+async def volunteercheck(interaction):
+    view =volunteerButtons()
+    await interaction.response.send_message('@player The Volunteer check has started! You have 15 minutes to volunteer if you wish to sit out', view = view)
 
 
 #starts the bot
