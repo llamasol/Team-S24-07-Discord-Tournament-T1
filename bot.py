@@ -202,14 +202,14 @@ async def handleCheckin(interaction):
         checkinMessage.delete()
         await volunteercheck(interaction)
 
-        
+
 async def get_player_stats(summoner_id):
     api_summoner_by_name="https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner_id+"?api_key="+riot_key
     resp = requests.get(api_summoner_by_name)
     encrypted_id=resp.json()['id']
     api_rank_by_id="https://na1.api.riotgames.com/lol/league/v4/entries/by-summoner/"+encrypted_id+"?api_key="+riot_key
     resp=requests.get(api_rank_by_id)
-    return resp.json()
+    return resp.json()[0]['tier'], resp.json()[0]['rank']
 
 #starts the bot
 client.run(token)
