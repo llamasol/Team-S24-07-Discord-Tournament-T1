@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv, find_dotenv
 from discord import app_commands
 from discord.utils import get
+import asyncio
 
 
 """
@@ -23,6 +24,9 @@ tree = app_commands.CommandTree(client)
 owner = 97355249395716096
 token = os.getenv('TOKEN')
 
+#Global variables to help with the bot functionality
+isCheckinActive = False
+checkinMessage = None
 
 
 #Logs the bot into discord
@@ -149,10 +153,28 @@ class volunteerButtons(discord.ui.View):
 @tree.command(
         name = 'checkin',
         description = 'Initiate Tournament Check-In.',
-        guild = discord.Object(id=1197932384348295249))
+        guild = discord.Object(id=1197932384348295249)
+        )
 async def checkin(interaction):
-        view = CheckinButtons()
-        await interaction.response.send_message('Check-In for the tournament has started! You have 15 minutes to check-in.', view = view)
+        global isCheckinActive
+        global checkinMessage
+
+        if isCheckinActive:
+            isCheckinActive = False
+            checkinMessage.delete()
+            await volunteercheck(interaction)
+            
+
+        else:
+            isCheckinActive = True
+            view = CheckinButtons()
+            checkinMessage = await interaction.response.send_message('Check-In for the tournament has started! You have 10 minutes to check-in.', view = view)
+
+            #starts a 10 minute timer to automatically start the volunteer check
+            asyncio.create_task(handleCheckin(interaction))
+
+
+        
 
 
 #Command to start volunteer
@@ -163,8 +185,20 @@ async def checkin(interaction):
 )
 async def volunteercheck(interaction):
     view =volunteerButtons()
-    await interaction.response.send_message('@player The Volunteer check has started! You have 15 minutes to volunteer if you wish to sit out', view = view)
+    await interaction.response.send_message('The Volunteer check has started! You have 10 minutes to volunteer if you wish to sit out', view = view)
 
+
+#Helper function to allow us to wait for the checkin timer to go through. 
+async def handleCheckin(interaction):
+    await asyncio.sleep(600)
+
+    global isCheckinActive
+    global checkinMessage
+    if isCheckinActive:
+        isCheckinActive = False
+
+        checkinMessage.delete()
+        await volunteercheck(interaction)
 
 #starts the bot
 client.run(token)
