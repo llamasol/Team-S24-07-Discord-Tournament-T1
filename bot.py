@@ -4,6 +4,7 @@ from dotenv import load_dotenv, find_dotenv
 from discord import app_commands
 from discord.utils import get
 import asyncio
+import requests
 
 
 """
@@ -23,6 +24,7 @@ client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 owner = 97355249395716096
 token = os.getenv('TOKEN')
+riot_key="RGAPI-e09b0e22-5e18-4760-aff9-bb6d723b872a"
 
 #Global variables to help with the bot functionality
 isCheckinActive = False
@@ -199,6 +201,15 @@ async def handleCheckin(interaction):
 
         checkinMessage.delete()
         await volunteercheck(interaction)
+
+        
+async def get_player_stats(summoner_id):
+    api_summoner_by_name="https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner_id+"?api_key="+riot_key
+    resp = requests.get(api_summoner_by_name)
+    encrypted_id=resp.json()['id']
+    api_rank_by_id="https://na1.api.riotgames.com/lol/league/v4/entries/by-summoner/"+encrypted_id+"?api_key="+riot_key
+    resp=requests.get(api_rank_by_id)
+    return resp.json()
 
 #starts the bot
 client.run(token)
