@@ -5,7 +5,7 @@ from discord import app_commands
 from discord.utils import get
 import asyncio
 import requests
-
+from discord.ext import commands
 
 """
 This section defines the intents that the bot will use
@@ -28,7 +28,6 @@ riot_key="RGAPI-e09b0e22-5e18-4760-aff9-bb6d723b872a"
 
 #Global variables to help with the bot functionality
 isCheckinActive = False
-checkinMessage = None
 
 
 #Logs the bot into discord
@@ -159,21 +158,21 @@ class volunteerButtons(discord.ui.View):
         )
 async def checkin(interaction):
         global isCheckinActive
-        global checkinMessage
 
         if isCheckinActive:
             isCheckinActive = False
-            checkinMessage.delete()
+            
             await volunteercheck(interaction)
             
 
         else:
             isCheckinActive = True
             view = CheckinButtons()
-            checkinMessage = await interaction.response.send_message('Check-In for the tournament has started! You have 10 minutes to check-in.', view = view)
+            await interaction.response.send_message('Check-In for the tournament has started! You have 10 minutes to check-in.', view = view)
+
 
             #starts a 10 minute timer to automatically start the volunteer check
-            asyncio.create_task(handleCheckin(interaction))
+            await asyncio.create_task(handleCheckin(interaction))
 
 
         
@@ -186,21 +185,29 @@ async def checkin(interaction):
     guild= discord.Object(1197932384348295249)
 )
 async def volunteercheck(interaction):
-    view =volunteerButtons()
+    view = volunteerButtons()
     await interaction.response.send_message('The Volunteer check has started! You have 10 minutes to volunteer if you wish to sit out', view = view)
 
 
 #Helper function to allow us to wait for the checkin timer to go through. 
 async def handleCheckin(interaction):
-    await asyncio.sleep(600)
+    await asyncio.sleep(10)
 
     global isCheckinActive
-    global checkinMessage
     if isCheckinActive:
         isCheckinActive = False
-
-        checkinMessage.delete()
+        await getPreviousMessageAndDelete()
         await volunteercheck(interaction)
+
+    
+#Should get the previous message and delete it
+async def getPreviousMessageAndDelete():
+    channel = client.get_channel(1206780036498194443)
+
+    async for message in channel.history():
+        if message.author.id == 1201706505481748511:
+            await message.delete()
+            break
 
 
 async def get_player_stats(summoner_id):
