@@ -5,7 +5,6 @@ from discord import app_commands
 from discord.utils import get
 import asyncio
 import requests
-from discord.ext import commands
 
 """
 This section defines the intents that the bot will use
@@ -175,6 +174,7 @@ async def checkin(interaction):
             await asyncio.create_task(handleCheckin(interaction))
 
 
+
         
 
 
@@ -197,7 +197,6 @@ async def handleCheckin(interaction):
     if isCheckinActive:
         isCheckinActive = False
         await getPreviousMessageAndDelete()
-        await volunteercheck(interaction)
 
     
 #Should get the previous message and delete it
