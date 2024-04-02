@@ -170,7 +170,7 @@ async def checkin(interaction):
             await interaction.response.send_message('Check-In for the tournament has started! You have 10 minutes to check-in.', view = view)
 
 
-            #starts a 10 minute timer to automatically start the volunteer check
+            #starts a 10 minute timer
             await asyncio.create_task(handleCheckin(interaction))
 
 
