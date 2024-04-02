@@ -216,20 +216,6 @@ async def get_player_stats(summoner_id):
     api_rank_by_id="https://na1.api.riotgames.com/lol/league/v4/entries/by-summoner/"+encrypted_id+"?api_key="+riot_key
     resp=requests.get(api_rank_by_id)
     return resp.json()[0]['tier'], resp.json()[0]['rank']
-    
-    @bot.command(name='mvp')
-async def vote_mvp(ctx, *, player_name):
-    # Check if the user has already voted
-    if ctx.author.id in votes:
-        await ctx.send('You have already voted. You cannot vote again.')
-        return
-
-    # Update the vote count for the specified player
-    player_name_lower = player_name.lower()
-    votes[player_name_lower] = votes.get(player_name_lower, 0) + 1
-
-    await ctx.send(f'Vote for {player_name} recorded.')
-
 
 #starts the bot
 client.run(token)
