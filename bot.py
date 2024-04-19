@@ -687,7 +687,7 @@ async def calculate_score_diff(team1, team2):
 
 
 @tree.command(
-    name='vote MVP',
+    name='voteMVP',
     description='Vote for the mvp of your match',
     guild = discord.Object(GUILD))
 async def voteMVP(interaction: discord.Interaction):
