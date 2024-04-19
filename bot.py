@@ -344,7 +344,7 @@ async def wins(interaction: discord.Interaction, player_1: str, player_2: str, p
 
 #Slash command to remove all users from the Player and Volunteer role.
 @tree.command(
-    name = 'remove',
+    name = 'clear',
     description = 'Remove all users from Players and Volunteer roles.',
     guild = discord.Object(GUILD))
 async def remove(interaction: discord.Interaction):
@@ -517,7 +517,6 @@ async def matchmake(interaction: discord.Interaction, match_number: str):
         for i, (team1, team2, team1_priority, team2_priority, diff) in enumerate(best_teams, start=1):
             if i == 1:
                 embedLobby1 = discord.Embed(color = discord.Color.from_rgb(255, 198, 41), title = f'Lobby 1 - Match: {match_number}')
-                #embedLobby1.set_thumbnail(url = 'attachment://Varsity_Owl_Logo_Grey_Stroke.png')
                 embedLobby1.set_footer(text = 'Team 1 Priority: ' + str(team1_priority) + '\nTeam 2 Priority: ' + str(team2_priority) + '\nTotal Lane Tier Differences: ' + str(diff))
                 embedLobby1.add_field(name = 'Roles', value = '')
                 embedLobby1.add_field(name = 'Team 1', value = '')
@@ -582,25 +581,23 @@ async def matchmake(interaction: discord.Interaction, match_number: str):
 
         #Embed to display all users who volunteered to sit out.
         embedVol = discord.Embed(color = discord.Color.blurple(), title = 'Volunteers - Match: ' + match_number)
-        file = discord.File('D:/Varsity_Owl_Logo_Grey_Stroke.png')
-        embedVol.set_thumbnail(url = 'attachment://Varsity_Owl_Logo_Grey_Stroke.png')
         for vol in volunteer_users:
             embedVol.add_field(name = '', value = vol)
         if not volunteer_users:
             embedVol.add_field(name = '', value = 'No volunteers.')
 
         if embedLobby2 == None:
-            await interaction.followup.send(file = file, embeds = [embedVol, embedLobby1])
+            await interaction.followup.send( embeds = [embedVol, embedLobby1])
         elif embedLobby2 == None and not volunteer_users:
-            await interaction.followup.send(file = file, embeds = embedLobby1)
+            await interaction.followup.send( embeds = embedLobby1)
         elif embedLobby3 == None:
-            await interaction.followup.send(file = file, embeds = [embedVol, embedLobby1, embedLobby2])
+            await interaction.followup.send( embeds = [embedVol, embedLobby1, embedLobby2])
         elif embedLobby3 == None and not volunteer_users:
-            await interaction.followup.send(file = file, embeds = [embedLobby1, embedLobby2])
+            await interaction.followup.send( embeds = [embedLobby1, embedLobby2])
         elif volunteer_users == None:
-            await interaction.followup.send(file = file, embeds = [embedLobby1, embedLobby2, embedLobby3])
+            await interaction.followup.send( embeds = [embedLobby1, embedLobby2, embedLobby3])
         else:
-            await interaction.followup.send(file = file, embeds = [embedVol, embedLobby1, embedLobby2, embedLobby3])
+            await interaction.followup.send( embeds = [embedVol, embedLobby1, embedLobby2, embedLobby3])
         
     except Exception as e:
         print(f'An error occured: {e}')
