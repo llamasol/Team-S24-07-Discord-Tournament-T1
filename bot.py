@@ -96,7 +96,7 @@ class CheckinButtons(discord.ui.View):
             style = discord.ButtonStyle.green)
     async def checkin(self, interaction: discord.Interaction, button: discord.ui.Button):
 
-        player = get(interaction.guild.roles, id = 1207503496316715008)
+        player = get(interaction.guild.roles, name = 'Player')
         member = interaction.user
 
         if player in member.roles:
@@ -120,7 +120,7 @@ class CheckinButtons(discord.ui.View):
             style = discord.ButtonStyle.red)
     async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
 
-        player = get(interaction.guild.roles, id = 1207503496316715008)
+        player = get(interaction.guild.roles, name = 'Player')
         member = interaction.user
 
         if player in member.roles:
@@ -148,8 +148,8 @@ class volunteerButtons(discord.ui.View):
             style = discord.ButtonStyle.green)
     async def checkin(self, interaction: discord.Interaction, button: discord.ui.Button):
 
-        player = get(interaction.guild.roles, id = 1207503496316715008)
-        volunteer = get(interaction.guild.roles, id = 1225260597843595385)
+        player = get(interaction.guild.roles, name = 'Player')
+        volunteer = get(interaction.guild.roles, name = 'Volunteer')
         member = interaction.user
 
         if player in member.roles:
@@ -175,8 +175,8 @@ class volunteerButtons(discord.ui.View):
             style = discord.ButtonStyle.red)
     async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
         
-        player = get(interaction.guild.roles, id = 1207503496316715008)
-        volunteer = get(interaction.guild.roles, id = 1225260597843595385)
+        player = get(interaction.guild.roles, name = 'Player')
+        volunteer = get(interaction.guild.roles, name = 'Volunteer')
         member = interaction.user
 
         if volunteer in member.roles:
@@ -676,7 +676,18 @@ async def calculate_score_diff(team1, team2):
 
 
 
+@tree.command(
+    name='mvp',
+    description = 'Starts the vote for mvp of the match',
+    guild = discord.Object(GUILD))
+async def mvpVote(interaction):
+    player_users = []
+    player = get(interaction.guild.roles, name = 'Player')
+    for user in interaction.guild.members:
+        if player in user.roles:
+            player_users.append(user.name)
 
+    
 
 #logging.getLogger('discord.gateway').addFilter(GatewayEventFilter())
 #starts the bot
