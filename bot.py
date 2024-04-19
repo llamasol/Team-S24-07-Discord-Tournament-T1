@@ -262,6 +262,22 @@ def update_toxicity(interaction, discord_username):
         (f'An error occured: {e}')
         return e
     
+
+def check_player(interaction, discord_username):
+    gs = gspread.oauth()
+    range_name = 'A1:J100'
+    sh = gs.open("MrBrynn's Test Sheet")
+    try:
+        values = sh.sheet1.get_values(range_name)
+        found_user = False
+        for i, row in enumerate(values, start = 1):
+            if discord_username.lower() == row[0].lower():
+                found_user = True
+        return found_user   
+    except HttpError as e:
+        (f'An error occured: {e}')
+        return e
+    
 def update_wins(interaction, winners):
     gs = gspread.oauth()
     range_name = 'A1:J100'
@@ -687,8 +703,18 @@ async def calculate_score_diff(team1, team2):
     name='votemvp',
     description='Vote for the mvp of your match',
     guild = discord.Object(GUILD))
-async def voteMVP(interaction: discord.Interaction):
-    print('hello')
+async def voteMVP(interaction: discord.Interaction, player: str):
+    await interaction.response.defer(ephemeral=True)
+    asyncio.sleep(1)
+    found_player = check_player(interaction = interaction, discord_username = player)
+    channel = client.get_channel(1207123664168820736)
+    user = interaction.user
+    if found_player:
+        await interaction.followup.send(f'You have voted for {player} to be MVP of the match')
+        await channel.send(f'{user} has voted - MVP: {player}')
+    else:
+        await interaction.followup.send('This player could not be found in the spreadsheet')
+
 
 #logging.getLogger('discord.gateway').addFilter(GatewayEventFilter())
 #starts the bot
