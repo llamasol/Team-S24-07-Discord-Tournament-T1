@@ -23,8 +23,6 @@ tree = app_commands.CommandTree(client)
 
 TOKEN = os.getenv('BOT_TOKEN')#Gets the bot's password token from the .env file and sets it to TOKEN.
 GUILD = os.getenv('GUILD_TOKEN')#Gets the server's id from the .env file and sets it to GUILD.
-#PLAYER = os.getenv('PLAYER_ID')#Gets the player role's id from the .env file and sets it to PLAYER.
-#VOLUNTEER = os.getenv('VOLUNTEER_ID')#Gets the volunteer role's id from the .env file and sets it to VOLUNTEER.
 SHEETS_ID = os.getenv('GOOGLE_SHEETS_ID')#Gets the Google Sheets ID from the .env file and sets it to SHEETS_ID.
 RIOT_KEY = os.getenv('RIOT_KEY_ID')
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']#Allows the app to read and write to the google sheet.
@@ -264,19 +262,31 @@ def update_toxicity(interaction, discord_username):
         (f'An error occured: {e}')
         return e
     
-def update_wins(interaction, discord_username):
+def update_wins(interaction, winners):
     gs = gspread.oauth()
     range_name = 'A1:J100'
     sh = gs.open("MrBrynn's Test Sheet")
     try:
+        wins = []
+        for str in winners:
+            wins.append(str.lower())
+
         values = sh.sheet1.get_values(range_name)
-        found_users = False
+        found_users = 0
+
         for i, row in enumerate(values, start = 1):
-            if discord_username.lower() == row[0].lower():
-                user_win = int(row[3])
-                sh.sheet1.update_cell(i, 4, user_win + 1)
-                found_users = True
-        return found_users   
+            for w in wins:
+                if w == row[0].lower():
+                    found_users += 1
+        if found_users == 5:
+            for i, row in enumerate(values, start = 1):
+                for w in wins:
+                    if w == row[0].lower():
+                        user_win = int(row[3])
+                        sh.sheet1.update_cell(i, 4, user_win + 1)
+            return True
+        else:
+            return False 
     except HttpError as e:
         (f'An error occured: {e}')
         return e
@@ -319,11 +329,12 @@ async def toxicity(interaction: discord.Interaction, discord_username: str):
         name = 'wins',
         description = "Adds a point to each winner's 'win' points.",
         guild = discord.Object(GUILD))
-async def wins(interaction: discord.Interaction, *, discord_username: str):
+async def wins(interaction: discord.Interaction, player_1: str, player_2: str, player_3: str, player_4: str, player_5: str):
     try:
+        winners = [player_1, player_2, player_3, player_4, player_5]
         await interaction.response.defer(ephemeral = True)
         await asyncio.sleep(1)
-        found_users = update_wins(interaction = interaction, discord_username = discord_username)
+        found_users = update_wins(interaction = interaction, winners = winners)
         if found_users:
             await interaction.followup.send("All winner's 'win' points have been updated.")
         else:
@@ -675,19 +686,12 @@ async def calculate_score_diff(team1, team2):
     return diff
 
 
-
 @tree.command(
-    name='mvp',
-    description = 'Starts the vote for mvp of the match',
+    name='vote MVP',
+    description='Vote for the mvp of your match',
     guild = discord.Object(GUILD))
-async def mvpVote(interaction):
-    player_users = []
-    player = get(interaction.guild.roles, name = 'Player')
-    for user in interaction.guild.members:
-        if player in user.roles:
-            player_users.append(user.name)
-
-    
+async def voteMVP(interaction: discord.Interaction):
+    print('hello')
 
 #logging.getLogger('discord.gateway').addFilter(GatewayEventFilter())
 #starts the bot
