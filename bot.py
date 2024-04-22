@@ -24,7 +24,6 @@ tree = app_commands.CommandTree(client)
 TOKEN = os.getenv('BOT_TOKEN')#Gets the bot's password token from the .env file and sets it to TOKEN.
 GUILD = os.getenv('GUILD_TOKEN')#Gets the server's id from the .env file and sets it to GUILD.
 SHEETS_ID = os.getenv('GOOGLE_SHEETS_ID')#Gets the Google Sheets ID from the .env file and sets it to SHEETS_ID.
-RIOT_KEY = os.getenv('RIOT_KEY_ID')
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']#Allows the app to read and write to the google sheet.
 
 @client.event
@@ -533,7 +532,6 @@ async def matchmake(interaction: discord.Interaction, match_number: str):
         for i, (team1, team2, team1_priority, team2_priority, diff) in enumerate(best_teams, start=1):
             if i == 1:
                 embedLobby1 = discord.Embed(color = discord.Color.from_rgb(255, 198, 41), title = f'Lobby 1 - Match: {match_number}')
-                embedLobby1.set_footer(text = 'Team 1 Priority: ' + str(team1_priority) + '\nTeam 2 Priority: ' + str(team2_priority) + '\nTotal Lane Tier Differences: ' + str(diff))
                 embedLobby1.add_field(name = 'Roles', value = '')
                 embedLobby1.add_field(name = 'Team 1', value = '')
                 embedLobby1.add_field(name = 'Team 2', value = '')
@@ -554,7 +552,6 @@ async def matchmake(interaction: discord.Interaction, match_number: str):
                 embedLobby1.add_field(name = '', value = team2.support.username)
             if i == 2:
                 embedLobby2 = discord.Embed(color = discord.Color.from_rgb(255, 198, 41), title = f'Lobby 2 - Match: {match_number}')
-                embedLobby2.set_footer(text = 'Team 1 Priority: ' + str(team1_priority) + '\nTeam 2 Priority: ' + str(team2_priority) + '\nTotal Lane Tier Differences: ' + str(diff))
                 embedLobby2.add_field(name = 'Roles', value = '')
                 embedLobby2.add_field(name = 'Team 1', value = '')
                 embedLobby2.add_field(name = 'Team 2', value = '')
@@ -575,7 +572,6 @@ async def matchmake(interaction: discord.Interaction, match_number: str):
                 embedLobby2.add_field(name = '', value = team2.support.username)
             if i == 3:
                 embedLobby3 = discord.Embed(color = discord.Color.from_rgb(255, 198, 41), title = f'Lobby 2 - Match: {match_number}')
-                embedLobby3.set_footer(text = 'Team 1 Priority: ' + str(team1_priority) + '\nTeam 2 Priority: ' + str(team2_priority) + '\nTotal Lane Tier Differences: ' + str(diff))
                 embedLobby3.add_field(name = 'Roles', value = '')
                 embedLobby3.add_field(name = 'Team 1', value = '')
                 embedLobby3.add_field(name = 'Team 2', value = '')
