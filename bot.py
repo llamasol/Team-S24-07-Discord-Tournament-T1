@@ -695,7 +695,7 @@ async def calculate_score_diff(team1, team2):
                      (team1.support.tier - team2.support.tier) ** 2
     return diff
 
-
+"""
 @tree.command(
     name='votemvp',
     description='Vote for the mvp of your match',
@@ -711,7 +711,7 @@ async def voteMVP(interaction: discord.Interaction, player: str):
         await channel.send(f'{user} has voted - MVP: {player}')
     else:
         await interaction.followup.send('This player could not be found in the spreadsheet')
-
+"""
 
 #logging.getLogger('discord.gateway').addFilter(GatewayEventFilter())
 #starts the bot
