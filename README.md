@@ -95,7 +95,7 @@ Run the bot.py via python3
 
 And run any command that tries to access the google sheets
 
-these commands are points, toxicity, wins, matchmake, votemvp
+these commands are points, toxicity, wins, matchmake
 
 This will pull up a google signin window in your browser. You must sign into the google account that has access to both the googlesheet and the api access
 
