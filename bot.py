@@ -24,6 +24,7 @@ tree = app_commands.CommandTree(client)
 TOKEN = os.getenv('BOT_TOKEN')#Gets the bot's password token from the .env file and sets it to TOKEN.
 GUILD = os.getenv('GUILD_TOKEN')#Gets the server's id from the .env file and sets it to GUILD.
 SHEETS_ID = os.getenv('GOOGLE_SHEETS_ID')#Gets the Google Sheets ID from the .env file and sets it to SHEETS_ID.
+SHEETS_NAME = os.getenv('GOOGLE_SHEETS_NAME')#Gets the google sheets name from the .env and sets it to SHEETS_NAME
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']#Allows the app to read and write to the google sheet.
 
 @client.event
@@ -224,7 +225,7 @@ def get_values_matchmaking(range_name):
 def update_points(interaction, player_users, volunteer_users):
     gs = gspread.oauth()
     range_name = 'A1:J100'
-    sh = gs.open("MrBrynn's Test Sheet")
+    sh = gs.open(SHEETS_NAME)
     player = get(interaction.guild.roles, name = 'Player')
     volunteer = get(interaction.guild.roles, name = 'Volunteer')
     try:
@@ -247,7 +248,7 @@ def update_points(interaction, player_users, volunteer_users):
 def update_toxicity(interaction, discord_username):
     gs = gspread.oauth()
     range_name = 'A1:J100'
-    sh = gs.open("MrBrynn's Test Sheet")
+    sh = gs.open(SHEETS_NAME)
     try:
         values = sh.sheet1.get_values(range_name)
         found_user = False
@@ -265,7 +266,7 @@ def update_toxicity(interaction, discord_username):
 def check_player(interaction, discord_username):
     gs = gspread.oauth()
     range_name = 'A1:J100'
-    sh = gs.open("MrBrynn's Test Sheet")
+    sh = gs.open(SHEETS_NAME)
     try:
         values = sh.sheet1.get_values(range_name)
         found_user = False
@@ -280,7 +281,7 @@ def check_player(interaction, discord_username):
 def update_wins(interaction, winners):
     gs = gspread.oauth()
     range_name = 'A1:J100'
-    sh = gs.open("MrBrynn's Test Sheet")
+    sh = gs.open(SHEETS_NAME)
     try:
         wins = []
         for str in winners:
