@@ -40,9 +40,19 @@ docs.google.com/spreadsheets/d/ID_IS_HERE/
 Sheet name should be self-explanatory, it is just the name of the google spreadsheet
 
 # How to setup Google API access
+
 Google makes a good enough tutorial on how to set it up, please read up here.
 https://developers.google.com/sheets/api/quickstart/python
-Installation of Packages
+Once you have setup your api access you must do the following things:
+Go to Google Cloud Console -> APIs & Services -> Credentials (left side) -> Create Credentials (Choose OAuth client ID) -> Select Desktop app for Application type -> Download JSON file -> Rename it to 'credentials.json'
+Once that is done, create a folder within this folder, it should be called src. Put the credentials.json in side that folder
+You will need to put this credentials in the following location as well
+"C:\Users\user\AppData\Roaming\gspread" OR "~/.config/gspread" 
+You may need to create these folders, but these are necessary to make the bot run
+
+
+# Installation of Packages
+
 The Required Packages for this bot to be ran on a computer are the following:
 asyncio
 discord
@@ -55,10 +65,10 @@ To install the other packages, run pip3 install <package name> and it should ins
 
 # Final setup for the bot
 
-In the src folder, there is a file called credentials, this file will need to be stored there along with in the following location on the user of the bot: ~/.config/gspread (these instructions are for linux installation.) 
-From there, when you run a command that accesses the google sheet, you will need to sign into google. This is a one-time setup and should not be necessary to do once more. If everything works, the bot should be good to run. (It will bring up a browser tab to sign into google, sign in to the google account with the API key and the google account that has access to the spreadsheet)
-As the bot is made with python, using any terminal to start the bot with python3 bot.py should work perfectly fine.
-
-
-![image](https://github.com/llamasol/Team-S24-07-Discord-Tournament-T1/assets/156405890/e6f5d887-9355-451d-96dd-f38ec6a5aafd)
+Run the bot.py via python3
+`python3 bot.py`
+And run any command that tries to access the google sheets
+these commands are points, toxicity, wins, matchmake, votemvp
+This will pull up a google signin window in your browser. You must sign into the google account that has access to both the googlesheet and the api access
+Once that is done, the bot will function without issues
 
